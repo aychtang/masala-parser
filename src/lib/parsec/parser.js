@@ -18,12 +18,11 @@ import unit from '../data/unit.js';
 import option from '../data/option.js';
 import response from "./response";
 
-function flatten(array, mutable) {
+function flatten(array) {
     var toString = Object.prototype.toString;
     var arrayTypeStr = '[object Array]';
-
     var result = [];
-    var nodes = (mutable && array) || array.slice();
+    var nodes =  array.slice();
     var node;
 
     if (!array.length) {
