@@ -57,7 +57,7 @@ function display(val, prefix = false) {
 function testLine(line) {
     // lineParser = new LineParser();
     const parsing = commandParser.parseLine(line);
-    console.info('----parsing', parsing, '\n');
+    console.info('parsing', parsing, '\n');
     value = parsing.value;
     accepted = parsing.isAccepted();
 }
@@ -68,16 +68,7 @@ export default {
         commandParser = new CommandParser();
         done();
     },
-    /*
-     'n sharp should be accepted': function (test) {
-     test.expect(1);
-     // tests here
-     test.ok(lineParser.parseLine('#+##').isAccepted(),
-     'should be accepted.');
-     //ends
-     test.done();
-     },*/
-    /*
+
     'text': function (test) {
         test.expect(1);
 
@@ -86,21 +77,21 @@ export default {
         test.ok(accepted, 'simple text');
 
         test.done();
-
     },
-*/
+
     'image command': function (test) {
-        test.expect(1);
+        test.expect(2);
 
         const expected = {
             command : {
                 type : 'image',
-                source : 'john.jpg'
+                value : 'john.jpg'
             }
         };
 
         testLine('!image: john.jpg\n');
         test.ok(accepted, 'accept image command');
+        test.deepEqual(expected,value,  'image command object not equal expected object' )
 
         test.done();
     },
