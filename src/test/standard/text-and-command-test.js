@@ -1,80 +1,60 @@
-import CommandParser from '../../lib/standard/command-parser';
-
-
-/*
- ======== A Handy Little Nodeunit Reference ========
- https://github.com/caolan/nodeunit
-
- Test methods:
- test.expect(numAssertions)
- test.done()
- Test assertions:
- test.ok(value, [message])
- test.equal(actual, expected, [message])
- test.notEqual(actual, expected, [message])
- test.deepEqual(actual, expected, [message])
- test.notDeepEqual(actual, expected, [message])
- test.strictEqual(actual, expected, [message])
- test.notStrictEqual(actual, expected, [message])
- test.throws(block, [error], [message])
- test.doesNotThrow(block, [error], [message])
- test.ifError(value)
+/**
+ * Created by Simon on 13/12/2016.
  */
 
-
-function isDefined(object) {
-    return typeof object !== 'undefined';
-}
-
-function isString(object) {
-    return typeof object === 'string';
-}
-
-function isArray(object) {
-    return object instanceof Array;
-}
-function isObject(object) {
-    return !(object instanceof Array) && typeof object == 'object';
-}
+import CommandParser from '../../lib/standard/command-parser';
+import TextParser from '../../lib/standard/text-parser';
+import stream from '../../lib/stream/index';
 
 
-let commandParser = null;
 let value = undefined;
 let accepted = undefined;
+let parser = null;
 
 
-function display(val, prefix = false) {
-    if (val === undefined) {
-        val = value;
-    }
-    if (prefix) {
-        console.info(`${prefix} : ${JSON.stringify(val)}`);
-    } else {
-        console.info(JSON.stringify(val));
-    }
+
+function getCombinedParser(){
+    //TODO comment on fait des fonction statique?
+        let parser1 = new CommandParser().getParser();
+        let parser2 = new TextParser().getParser();
+        return parser1.debug('command parser').or(parser2)
 }
 
+
 function testLine(line) {
-    // lineParser = new LineParser();
-    const parsing = commandParser.parseLine(line);
+    let myStream=stream.ofString(line);
+    let parsing = parser.parse(myStream);
+
     console.info('parsing', parsing, '\n');
     value = parsing.value;
     accepted = parsing.isAccepted();
 }
 
-
 export default {
     setUp: function (done) {
-        commandParser = new CommandParser();
+        parser = getCombinedParser();
         done();
     },
 
-    'text': function (test) {
+    'test simple': function (test) {
         test.expect(1);
 
         // tests here
-        testLine('It is hot summer\n');
-        test.ok(!accepted, 'simple text');
+        testLine(' It is hot summer');
+        test.ok(accepted, 'simple text');
+
+        test.done();
+    },
+
+
+
+    'formatted text': function (test) {
+        test.expect(1);
+        let line=" je m'appelle *Zangra*, commandant du fort de *Belancio* qui domine la plaine d'où l'ennemi viendra et me fera **heros**\n"
+
+        // tests here
+        testLine(line);
+        test.ok(accepted, 'formatted text');
 
         test.done();
     },
@@ -120,7 +100,7 @@ export default {
 
         // tests here
         testLine('!warning: Be careful !!!\n');
-        test.ok(accepted, 'the `warning` command does not work');
+        test.ok(accepted, 'series of addition are accepted');
 
 
         test.done();
