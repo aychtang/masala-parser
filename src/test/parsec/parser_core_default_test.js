@@ -329,7 +329,23 @@ export default  {
                'should be consumed.');
     test.done();
   },
-    
+
+  'expect (try.or.rep) to not be consumed': function(test) {
+    test.expect(1);
+    var P = parser;
+    // tests here
+    const combinator = P.try(P.string('stuff').then(P.string('bob'))).or(P.string("stuff"));
+    var parsing = combinator.parse(stream.ofString("stuff"));
+    const expected = "stuff";
+    test.equal(expected, parsing.value, "no try")
+
+    test.done();
+  },
+
+
+
+
+
   'expect (opt) some to accepted': function(test) {
     test.expect(1);
     // tests here  

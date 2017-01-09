@@ -25,6 +25,22 @@ export default  {
   setUp: function(done) {
     done();
   },
+
+  "expect (char) to accept special character '.'": function(test) {
+    test.expect(1);
+    // tests here
+    const parsing = parser.char('.').parse(stream.ofString("."),0);
+    test.equal(parsing.value,'.', '. is not the value');
+    test.done();
+  },
+
+  "expect (charIn) to accept special character '.'": function(test) {
+    test.expect(1);
+    // tests here
+    const parsing = parser.charIn('.x').parse(stream.ofString("."),0);
+    test.equal(parsing.value,'.', '. is not the value');
+    test.done();
+  },
     
   'expect (map) to be accepted': function(test) {
     test.expect(1);

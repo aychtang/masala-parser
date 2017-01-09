@@ -33,13 +33,38 @@ function fourSpacesBlock() {
     return P.char('\t').or(P.charIn(' \u00A0').occurrence(4));
 }
 
+function wordSeparator(){
+    return P.charIn(' \n.,').rep();
+}
+
+function wordSequence(stop){
+    return P.not(stop).flatmap(
+        initial => P.letters
+                .thenLeft(wordSeparator())
+                .map (letters => initial+letters)
+    )
+}
+
+function wordsUntil(stop){
+    return wordSequence(stop).rep();
+}
+
+
+function words(){
+    return P.letters.thenLeft(wordSeparator().rep()).rep();
+}
+
+
 
 export default {
+    wordSeparator,
+    wordsUntil,
     blank,
     rawTextUntilChar,
     eol,
     lineFeed,
-    fourSpacesBlock
+    fourSpacesBlock,
+    words
 }
 
 
