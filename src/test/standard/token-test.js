@@ -116,7 +116,7 @@ export default {
         test.done();
     },
 
-    'test words': function (test) {
+/*    'test words': function (test) {
         testAParser(Token.words(), 'Some things are\n ok.');
         const expected = ['Some', 'things', 'are', 'ok'];
         test.deepEqual(expected, value, 'words are not separated');
@@ -130,7 +130,7 @@ export default {
         test.deepEqual(expected.toString(), value.toString(), 'words are not stopped');
         test.done();
     },
-
+*/
 
     'expect (try and wordsUntil) to not be consumed': function (test) {
         const stop = P.try(P.string('-stop-')).or(P.string('-STOP-'));
@@ -141,7 +141,67 @@ export default {
 
         test.equal(true, expected, 'offset is not stopped at -STOP-');
         test.done();
+    },
+    'expect  wordsUntil to  be rejected if no end': function (test) {
+        const stop = P.try(P.string('-stop-')).or(P.string('-STOP-'));
+        const doc = 'Some things are ok but there is no clear stop here.';
+        testAParser(Token.wordsUntil(stop), doc);
+        const expectedOffset = doc.length;
+
+        test.ok( !parsing.isAccepted(), "Parsing is not rejected with no stop found");
+        test.equal(expectedOffset, parsing.offset, 'offset is not set at the end');
+        test.done();
+    },
+    'expect (stringIn) to not be accepted with many strings': function (test) {
+
+
+        const doc = 'James Bond series, by writer Ian Fleming';
+
+        testAParser(Token.stringIn(['James', 'Jack', 'John']), doc);
+        const expectedOffset = 5;
+
+        test.equal(expectedOffset, parsing.offset, 'offset is not stopped at expectedString');
+        test.equal('James', parsing.value, 'value is not set to the found string');
+        test.done();
+    },
+    'expect (stringIn) to not be accepted with one strings': function (test) {
+
+
+        const doc = 'Jack is there';
+
+        testAParser(Token.stringIn(['Jack']), doc);
+        const expectedOffset = 4;
+
+        test.equal(expectedOffset, parsing.offset, 'offset is not stopped at expectedString');
+        test.equal('Jack', parsing.value, 'value is not set to the found string');
+        test.done();
+    },
+    'expect (stringIn) to not be accepted with empty array': function (test) {
+
+
+        const doc = 'Jack is there';
+
+        testAParser(Token.stringIn([]), doc);
+        const expectedOffset = 0;
+
+        test.equal(expectedOffset, parsing.offset, 'offset is not stopped at expectedString');
+        test.equal(undefined, parsing.value, 'value is not undefined for empty search');
+        test.done();
+    },
+    'expect (stringIn) to not be rejected with many strings': function (test) {
+
+
+        const doc = 'The James Bond series, by writer Ian Fleming';
+
+        testAParser(Token.stringIn(['James', 'Jack', 'John']), doc);
+        const expectedOffset = 0;
+
+        test.equal(expectedOffset, parsing.offset, 'stream has moved offset');
+        test.equal(undefined, parsing.value, 'value is not undefined');
+        // TODO : test is parsing.isAccepted()
+        test.done();
     }
+
 
 
 }
