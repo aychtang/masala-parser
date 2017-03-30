@@ -20,6 +20,7 @@ import parserExtensionTest from './parsec/parser_extensions_test';
 import parserStreamTest from './parsec/parser_stream_test';
 import parserResponseTest from './parsec/response_test';
 import flowBundleTest from './parsec/flow-bundle-test';
+import charsBundleTest from './parsec/chars-bundle-test';
 import standardToken from './standard/token-test';
 import markdown from './standard/markdown/index';
 import jsonParseTest from './standard/json/jsonparser_test'
@@ -30,7 +31,7 @@ export {
     optionTest, tryTest, streamsTest, bufferedStreamsTest,
     genlexTest, tokenTest, tokenizerTest,
     parserChainTest, parserCoreTest, parserCoreDefaultTest, parserExtensionTest,
-    parserStreamTest, parserResponseTest,flowBundleTest,
+    parserStreamTest, parserResponseTest,flowBundleTest, charsBundleTest,
     standardToken,jsonParseTest, jsonSampleTest,
     markdown, extractorBundleTest
 }
